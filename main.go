@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	_ "embed"
 	"fmt"
 	"html/template"
 	"io"
@@ -21,6 +22,10 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+var (
+	//go:embed templates/index.html
+	indexTemplate string
+)
 var (
 	version string
 )
@@ -115,6 +120,8 @@ func main() {
 
 	r.HandleFunc("/favicon.ico", http.NotFound)
 	r.HandleFunc("/", handleIndex)
+	r.HandleFunc("/healthz", handleHealth)
+
 	logrus.Infof("Server listening on %s version %s", conf.Listen, version)
 	logrus.Info(http.ListenAndServe(conf.Listen, handlers.LoggingHandler(os.Stdout, r)))
 }
@@ -123,6 +130,10 @@ type operation struct {
 	Name      string
 	Operation string
 	Error     error
+}
+
+func handleHealth(w http.ResponseWriter, r *http.Request) {
+	return
 }
 
 func handleIndex(w http.ResponseWriter, r *http.Request) {
@@ -189,7 +200,7 @@ func render(w io.Writer, affects map[string][]operation, rs []operation, current
 		},
 	}
 
-	t, err := template.New("index").Funcs(funcMap).ParseFiles("template/index.html")
+	t, err := template.New("index").Funcs(funcMap).Parse(indexTemplate)
 	if err != nil {
 		return err
 	}
