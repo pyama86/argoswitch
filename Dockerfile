@@ -1,5 +1,5 @@
 FROM golang:latest as builder
-ADD . /opt/argoswitch
+COPY . /opt/argoswitch
 WORKDIR /opt/argoswitch/
 RUN GOOS=linux CGO_ENABLED=0 make build
 
