@@ -1,0 +1,98 @@
+{{ define "index" }}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <title>ArgoSwitch</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="mx-auto position-absolute top-50 start-50 translate-middle" style="width: 600px;">
+        <h2><a href="/">ArgoSwitch</a></h2>
+        <h3>Current Status</h3>
+        <div class="row">
+          <div class="col-sm">
+            <span class="fs-4 text-decoration-underline">{{ .CurrentState }}</span>
+          </div>
+        </div>
+        <h3>Change Status</h3>
+        <div class="row">
+          <div class="col-sm">
+            <button type="button" class="btn btn-primary{{ if eq .CurrentState "primary"}} disabled {{ end  }}" data-bs-toggle="modal" data-bs-target="#primaryModal">Primary</button>
+            <button type="button" class="btn btn-success{{ if eq .CurrentState "secondry"}} disabled {{ end  }}" data-bs-toggle="modal" data-bs-target="#secondryModal">Secondary</button>
+            <button type="button" class="btn btn-danger{{ if eq .CurrentState "service-out"}} disabled {{ end  }}" data-bs-toggle="modal" data-bs-target="#service-outModal">ServiceOut</button>
+          </div>
+        </div>
+
+        {{$rlength := len $.Results }}
+        {{if ne $rlength 0}}
+          <h3>Result</h3>
+          {{ range $op := .Results }}
+            <div class="row">
+              <div class="col-sm">
+                <span class="align-middle">
+                  {{ addIcon $op |safehtml}}
+                  {{ if not $op.Error }}
+                    {{ $op.Name }} is {{ $op.Operation }}ed
+                  {{ else }}
+                    {{ $op.Name }} has error: {{ errorstr $op.Error }}
+                  {{ end }}
+                </span>
+              </div>
+            </div>
+          {{ end }}
+        {{ end }}
+      </div>
+    </div>
+
+    {{ range $key, $value := .Annotations }}
+
+    <div class="modal fade" id="{{ $key }}Modal" tabindex="-1" aria-labelledby="{{ $key }}ModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="{{ $key }}ModalLabel">Change to the {{ $key }}?</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+
+          {{$length := len (index $.Affects $key) }}
+          {{if eq $length 0}}
+            Nothing Any Actions.
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          {{else}}
+            {{ range $op := index $.Affects $key }}
+              <div class="row">
+                <div class="col-sm">
+                  <span class="align-middle">
+                    {{ addIcon $op |safehtml}}
+                    {{ $op.Name }} will be {{ $op.Operation }}
+                  </span>
+                </div>
+              </div>
+            {{ end }}
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <form action="/" method="post">
+                <input type="hidden" name="action" value="{{ $key }}">
+
+                <button type="submit" class="btn btn-primary">Become {{ $key }}</button>
+              </form>
+            </div>
+          {{end}}
+          </div>
+        </div>
+      </div>
+    </div>
+    {{ end }}
+    </body>
+</html>
+{{ end }}
