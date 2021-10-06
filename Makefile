@@ -11,9 +11,11 @@ run:
 	go run main.go
 .PHONY: devdeps
 devdeps:
-	go get github.com/codegangsta/gin
 	which golint > /dev/null || go get -u golang.org/x/lint/golint
 	which staticcheck > /dev/null || go get honnef.co/go/tools/cmd/staticcheck
+	which ghr > /dev/null||go get -u github.com/tcnksm/ghr
+	which git-semv > /dev/null || brew tap linyows/git-semv
+	which git-semv > /dev/null || brew install git-semv
 
 .PHONY: test
 test:
@@ -30,6 +32,25 @@ lint: devdeps
 
 .PHONY: build
 build: ## Build server
-	$(GO) build -ldflags "-X main.version=$(VERSION)" -o argoswitch
+	$(GO) build -ldflags "-X main.version=$(VERSION)" -o binary/argoswitch
 
 
+.PHONY: release
+release: devdeps build
+	mkdir -p binary
+	ghr --replace $(echo $GITHUB_REF | sed 's/.*v/v/g') binary
+
+.PHONY: release_major
+## release_major: release nke (major)
+release_major:
+	git semv major --bump
+
+.PHONY: release_minor
+## release_minor: release nke (minor)
+release_minor:
+	git semv minor --bump
+
+.PHONY: release_patch
+## release_patch: release nke (patch)
+release_patch:
+	git semv patch --bump
