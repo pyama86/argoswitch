@@ -21,6 +21,10 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+var (
+	version string
+)
+
 const annotationPrimary = "argoswitch.github.io/primary"
 const annotationSecondry = "argoswitch.github.io/secondry"
 const annotationServiceOut = "argoswitch.github.io/service-out"
@@ -111,7 +115,7 @@ func main() {
 
 	r.HandleFunc("/favicon.ico", http.NotFound)
 	r.HandleFunc("/", handleIndex)
-	logrus.Infof("Server listening on %s", conf.Listen)
+	logrus.Infof("Server listening on %s version %s", conf.Listen, version)
 	logrus.Info(http.ListenAndServe(conf.Listen, handlers.LoggingHandler(os.Stdout, r)))
 }
 

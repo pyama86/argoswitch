@@ -4,6 +4,7 @@ BOLD=\033[1m
 GO ?= GO111MODULE=on go
 TEST ?= $(shell $(GO) list ./... | grep -v -e vendor -e keys -e tmp)
 
+VERSION = $(shell git describe --tags --abbrev=0)
 
 .PHONY: run
 run:
@@ -26,3 +27,9 @@ lint: devdeps
 	@echo "$(INFO_COLOR)==> $(RESET)$(BOLD)Linting$(RESET)"
 	golint -min_confidence 1.1 -set_exit_status $(TEST)
 	staticcheck ./...
+
+.PHONY: build
+build: ## Build server
+	$(GO) build -ldflags "-X main.version=$(VERSION)" -o argoswitch
+
+
