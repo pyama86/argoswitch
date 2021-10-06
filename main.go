@@ -162,7 +162,7 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 			errorResponce(w, err)
 			return
 		}
-
+		cs = r.FormValue("action")
 	}
 
 	if err := render(w, detectOperations(list.Items), rs, cs); err != nil {
