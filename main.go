@@ -133,7 +133,7 @@ type operation struct {
 }
 
 func handleHealth(w http.ResponseWriter, r *http.Request) {
-	return
+	w.WriteHeader(http.StatusOK)
 }
 
 func handleIndex(w http.ResponseWriter, r *http.Request) {
