@@ -4,6 +4,6 @@ WORKDIR /opt/argoswitch/
 RUN GOOS=linux CGO_ENABLED=0 make build
 
 FROM scratch
-COPY --from=builder /opt/argoswitch/argoswitch /bin/argoswitch
+COPY --from=builder /opt/argoswitch/binary/argoswitch /bin/argoswitch
 EXPOSE 1104
 CMD ["/bin/argoswitch"]
