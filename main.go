@@ -89,6 +89,7 @@ type Config struct {
 	ServerName  string `required:"true"`
 	ServerToken string `required:"true"`
 	Insecure    bool
+	PlainText   bool
 }
 
 func stateFilePath() string {
@@ -144,6 +145,7 @@ func handleIndex(w http.ResponseWriter, r *http.Request) {
 		AuthToken:  conf.ServerToken,
 		GRPCWeb:    true,
 		Insecure:   conf.Insecure,
+		PlainText:  conf.PlainText,
 	}
 
 	conn, appIf := argocdclient.NewClientOrDie(clientOpts).NewApplicationClientOrDie()
