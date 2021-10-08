@@ -49,12 +49,28 @@ func changeState(appIf applicationpkg.ApplicationServiceClient, changeTo string,
 		for k, v := range app.ObjectMeta.Annotations {
 			if k == annotations[changeTo] {
 				switch v {
-				case "sync":
+				case "auto-sync", "sync":
+					s := app.Spec
+					if v == "auto-sync" {
+						s.SyncPolicy.Automated = &v1alpha1.SyncPolicyAutomated{
+							Prune:    true,
+							SelfHeal: true,
+						}
+						_, err = appIf.UpdateSpec(ctx, &applicationpkg.ApplicationUpdateSpecRequest{
+							Name: &app.ObjectMeta.Name,
+							Spec: s,
+						})
+					}
 					_, err = appIf.Sync(ctx, &applicationpkg.ApplicationSyncRequest{
 						Name:  &app.ObjectMeta.Name,
 						Prune: true,
 					})
-				case "disable":
+				case "delete", "delete-app":
+					_, err = appIf.Delete(ctx, &applicationpkg.ApplicationDeleteRequest{
+						Name:    &app.ObjectMeta.Name,
+						Cascade: &[]bool{true}[0],
+					})
+				case "disable", "disable-sync", "delete-resource":
 					s := app.Spec
 					s.SyncPolicy.Automated = nil
 					_, err = appIf.UpdateSpec(ctx, &applicationpkg.ApplicationUpdateSpecRequest{
@@ -62,16 +78,24 @@ func changeState(appIf applicationpkg.ApplicationServiceClient, changeTo string,
 						Spec: s,
 					})
 
-				case "delete":
-					_, err = appIf.Delete(ctx, &applicationpkg.ApplicationDeleteRequest{
-						Name:    &app.ObjectMeta.Name,
-						Cascade: &[]bool{true}[0],
-					})
-
+					if v == "delete-resource" {
+						for _, r := range app.Status.Resources {
+							_, err = appIf.DeleteResource(ctx, &applicationpkg.ApplicationResourceDeleteRequest{
+								Name:         &app.ObjectMeta.Name,
+								ResourceName: r.Name,
+								Namespace:    r.Namespace,
+								Group:        r.Group,
+								Version:      r.Version,
+								Kind:         r.Kind,
+							})
+						}
+					}
 				}
 
 				if err != nil {
-					logrus.Error(err)
+					logrus.Errorf("%s is happend error: %s", app.ObjectMeta.Name, err)
+				} else {
+					logrus.Infof("%s is to make %s", app.ObjectMeta.Name, v)
 				}
 				rs = append(rs, operation{
 					Name:      app.ObjectMeta.Name,
@@ -186,18 +210,19 @@ func render(w io.Writer, affects map[string][]operation, rs []operation, current
 		"addIcon": func(o operation) string {
 			var icon, color string
 			switch o.Operation {
-			case "sync":
+			case "sync", "auto-sync":
 				icon = "check-square"
 				color = "cornflowerblue"
-			case "disable":
+			case "disable", "disable-sync", "delete-resource":
 				icon = "stop-circle"
 				color = "green"
-			case "delete":
+			case "delete", "delete-app":
 				icon = "trash"
 				color = "red"
 			}
 			return fmt.Sprintf(`<i class="bi-%s" style="color: %s;"></i>`, icon, color)
 		},
+
 		"safehtml": func(text string) template.HTML {
 			return template.HTML(text)
 		},

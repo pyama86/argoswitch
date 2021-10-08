@@ -19,9 +19,11 @@ metadata:
     argoswitch.github.io/service-out: delete
 ```
 
+- auto-sync: do sync and enable auto sync.
 - sync: do sync.
-- disable : stop auto sync.
-- delete: delete application.
+- disable, disable-sync : stop auto sync.
+- delete, delete-app: delete application.
+- delete-resource: delete resources and stop auto sync.
 
 ## Author
 @pyama86
