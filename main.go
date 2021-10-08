@@ -75,6 +75,11 @@ func changeState(appIf applicationpkg.ApplicationServiceClient, changeTo string,
 					})
 				case "disable", "disable-sync", "delete-resource":
 					s := app.Spec
+
+					if s.SyncPolicy == nil {
+						s.SyncPolicy = &v1alpha1.SyncPolicy{}
+					}
+
 					s.SyncPolicy.Automated = nil
 					_, err = appIf.UpdateSpec(ctx, &applicationpkg.ApplicationUpdateSpecRequest{
 						Name: &app.ObjectMeta.Name,
