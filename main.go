@@ -61,10 +61,13 @@ func changeState(appIf applicationpkg.ApplicationServiceClient, changeTo string,
 							Spec: s,
 						})
 					}
-					_, err = appIf.Sync(ctx, &applicationpkg.ApplicationSyncRequest{
-						Name:  &app.ObjectMeta.Name,
-						Prune: true,
-					})
+
+					if err == nil {
+						_, err = appIf.Sync(ctx, &applicationpkg.ApplicationSyncRequest{
+							Name:  &app.ObjectMeta.Name,
+							Prune: true,
+						})
+					}
 				case "delete", "delete-app":
 					_, err = appIf.Delete(ctx, &applicationpkg.ApplicationDeleteRequest{
 						Name:    &app.ObjectMeta.Name,
@@ -78,7 +81,7 @@ func changeState(appIf applicationpkg.ApplicationServiceClient, changeTo string,
 						Spec: s,
 					})
 
-					if v == "delete-resource" {
+					if err == nil && v == "delete-resource" {
 						for _, r := range app.Status.Resources {
 							_, err = appIf.DeleteResource(ctx, &applicationpkg.ApplicationResourceDeleteRequest{
 								Name:         &app.ObjectMeta.Name,
