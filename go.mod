@@ -3,16 +3,11 @@ module github.com/pyama86/argoswitch
 go 1.16
 
 require (
-	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/argoproj/argo-cd/v2 v2.1.3
-	github.com/go-git/go-git/v5 v5.2.0 // indirect
 	github.com/google/go-cmp v0.5.6 // indirect
 	github.com/gorilla/handlers v1.5.1
-	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190118093823-f849b5445de4 // indirect
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/sirupsen/logrus v1.7.0
-	golang.org/x/oauth2 v0.0.0-20210628180205-a41e5a781914 // indirect
-	google.golang.org/grpc v1.33.1 // indirect
 	k8s.io/apimachinery v0.21.0
 )
 
