@@ -27,6 +27,7 @@ func Test_detectOperations(t *testing.T) {
 							"argoswitch.github.io/primary":     "sync",
 							"argoswitch.github.io/secondry":    "disable",
 							"argoswitch.github.io/service-out": "delete",
+							"argoswitch.github.io/maint":       "disable",
 						},
 					},
 				},
@@ -48,6 +49,12 @@ func Test_detectOperations(t *testing.T) {
 					operation{
 						Name:      "test-app",
 						Operation: "delete",
+					},
+				},
+				"maint": []operation{
+					operation{
+						Name:      "test-app",
+						Operation: "disable",
 					},
 				},
 			},
