@@ -9,12 +9,14 @@ VERSION = $(shell git describe --tags --abbrev=0)
 .PHONY: run
 run:
 	go run main.go
+.PHONY: releasedeps
+releasedeps:
+	which git-semv > /dev/null || brew tap linyows/git-semv
+	which git-semv > /dev/null || brew install git-semv
 .PHONY: devdeps
 devdeps:
 	which golint > /dev/null || go get -u golang.org/x/lint/golint
 	which staticcheck > /dev/null || go get honnef.co/go/tools/cmd/staticcheck
-	which git-semv > /dev/null || brew tap linyows/git-semv
-	which git-semv > /dev/null || brew install git-semv
 
 .PHONY: test
 test:
@@ -35,16 +37,16 @@ build: ## Build server
 
 
 .PHONY: release_major
-## release_major: release nke (major)
+## release_major: release (major)
 release_major:
 	git semv major --bump
 
 .PHONY: release_minor
-## release_minor: release nke (minor)
+## release_minor: release (minor)
 release_minor:
 	git semv minor --bump
 
 .PHONY: release_patch
-## release_patch: release nke (patch)
+## release_patch: release (patch)
 release_patch:
 	git semv patch --bump
