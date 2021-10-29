@@ -25,7 +25,7 @@ func Test_detectOperations(t *testing.T) {
 						Name: "test-app",
 						Annotations: map[string]string{
 							"argoswitch.github.io/primary":     "sync",
-							"argoswitch.github.io/secondry":    "disable",
+							"argoswitch.github.io/secondary":   "disable",
 							"argoswitch.github.io/service-out": "delete",
 							"argoswitch.github.io/maint":       "disable",
 						},
@@ -39,7 +39,7 @@ func Test_detectOperations(t *testing.T) {
 						Operation: "sync",
 					},
 				},
-				"secondry": []operation{
+				"secondary": []operation{
 					operation{
 						Name:      "test-app",
 						Operation: "disable",

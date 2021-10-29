@@ -3,7 +3,7 @@
 ArgoSwitch is updating ArgoCD Application Config.
 
 ![top](./images/top.png)
-![secondry](./images/secondry.png)
+![secondary](./images/secondary.png)
 
 ## usage
 
@@ -15,7 +15,7 @@ metadata:
   name: example
   annotations:
     argoswitch.github.io/primary: sync
-    argoswitch.github.io/secondry: disable
+    argoswitch.github.io/secondary: disable
     argoswitch.github.io/service-out: delete
 ```
 

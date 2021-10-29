@@ -31,13 +31,13 @@ var (
 )
 
 const annotationPrimary = "argoswitch.github.io/primary"
-const annotationSecondry = "argoswitch.github.io/secondry"
+const annotationSecondary = "argoswitch.github.io/secondary"
 const annotationServiceOut = "argoswitch.github.io/service-out"
 const annotationMaint = "argoswitch.github.io/maint"
 
 var annotations = map[string]string{
 	"primary":     annotationPrimary,
-	"secondry":    annotationSecondry,
+	"secondary":   annotationSecondary,
 	"maint":       annotationMaint,
 	"service-out": annotationServiceOut,
 }
