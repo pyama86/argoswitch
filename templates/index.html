@@ -25,7 +25,7 @@
         <div class="row">
           <div class="col-sm">
             <button type="button" class="btn btn-primary{{ if eq .CurrentState "primary"}} disabled {{ end  }}" data-bs-toggle="modal" data-bs-target="#primaryModal">Primary</button>
-            <button type="button" class="btn btn-success{{ if eq .CurrentState "secondry"}} disabled {{ end  }}" data-bs-toggle="modal" data-bs-target="#secondryModal">Secondary</button>
+            <button type="button" class="btn btn-success{{ if eq .CurrentState "secondary"}} disabled {{ end  }}" data-bs-toggle="modal" data-bs-target="#secondaryModal">Secondary</button>
             <button type="button" class="btn btn-warning{{ if eq .CurrentState "maint"}} disabled {{ end  }}" data-bs-toggle="modal" data-bs-target="#maintModal">Maint</button>
             <button type="button" class="btn btn-danger{{ if eq .CurrentState "service-out"}} disabled {{ end  }}" data-bs-toggle="modal" data-bs-target="#service-outModal">ServiceOut</button>
           </div>
